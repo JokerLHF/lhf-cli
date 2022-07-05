@@ -1,0 +1,1 @@
+cli 模版，参考资料 https://juejin.cn/post/7021097811491946503#heading-8
