@@ -1,10 +1,10 @@
 {
-  "name": "hf-cli",
+  "name": "lhf-front-cli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "bin": {
-    "hf": "bin/cli.js"
+    "lhf": "bin/cli.js"
   },
   "directories": {
     "lib": "lib"
