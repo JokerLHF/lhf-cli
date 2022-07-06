@@ -1,7 +1,7 @@
 import { program } from 'commander';
 import createAction from './commands/create';
 
-program.version('1.0.1');
+program.version('1.0.2');
 
 program
   .command("create <app-name>")
