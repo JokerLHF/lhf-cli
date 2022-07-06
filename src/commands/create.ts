@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import handlebars from 'handlebars'
 import inquirer from 'inquirer'
 import execa from 'execa'
+import downloadGit from 'git-clone/promise';
 
 const path = require("path");
 const fse = require('fs-extra');
@@ -58,26 +59,33 @@ export const checkProjectExist = async (targetDir: string) => {
   return false
 }
 
-const cloneProject = async (targetDir: string, projectName: string, projectInfo: any) => {
-  const templateDir = path.resolve(__dirname, "../../template/react");
-  startSpinner(`开始创建私服仓库 ${chalk.green(targetDir)}...`);
-  await fse.copy(
-    templateDir,
-    targetDir,
-  );
-  // handlebars模版引擎解析用户输入的信息存在package.json
-  const jsonPath = `${targetDir}/package.json`
-  const jsonContent = fse.readFileSync(jsonPath, 'utf-8');
-  const jsonResult = handlebars.compile(jsonContent)(projectInfo)
-  fse.writeFileSync(jsonPath, jsonResult)
+// 远程仓库 url
+const getRepoUrl = () => {
+  return 'https://github.com/JokerLHF/react-template.git';
+}
 
-  // 新建工程装包
-  execa.commandSync('npm install', {
-    stdio: 'inherit',
-    cwd: targetDir,
-  })
+const cloneProject = async (targetDir: string, projectInfo: any) => {
+  try {
+    startSpinner(`开始创建私服仓库 ${chalk.green(targetDir)}...`);
+    await downloadGit(getRepoUrl(), targetDir);
 
-  startSpinner(`创建成功 ${chalk.green(targetDir)}`);
+    // handlebars模版引擎解析用户输入的信息存在package.json
+    const jsonPath = `${targetDir}/package.json`;
+    const jsonContent = fse.readFileSync(jsonPath, 'utf-8');
+    const jsonResult = handlebars.compile(jsonContent)(projectInfo);
+    fse.writeFileSync(jsonPath, jsonResult);
+
+    // 新建工程装包
+    execa.commandSync('npm install', {
+      stdio: 'inherit',
+      cwd: targetDir,
+    });
+
+    startSpinner(`创建成功 ${chalk.green(targetDir)}`);
+  } catch(err) {
+    startSpinner(chalk.red("创建私服仓库失败"));
+    console.log('err');
+  }
 }
 
 const createAction = async (projectName: string) => {
@@ -85,7 +93,7 @@ const createAction = async (projectName: string) => {
 
   if (!(await checkProjectExist(targetDir))) {
     const projectInfo = await getQuestions(projectName);
-    await cloneProject(targetDir, projectName, projectInfo)
+    await cloneProject(targetDir, projectInfo)
   }
 };
 
