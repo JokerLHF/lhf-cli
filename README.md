@@ -1,4 +1,6 @@
-cli 模版，参考资料 https://juejin.cn/post/7021097811491946503#heading-8
+# 使用
+- npm i lhf-front-cli -g
+- lhf create xxx
 
 # 本地调试：
 - link 到全局：
@@ -24,3 +26,6 @@ cli 模版，参考资料 https://juejin.cn/post/7021097811491946503#heading-8
 
 # 发布线上
 - npm publish
+
+# 参考资料
+- https://juejin.cn/post/7021097811491946503#heading-8
